@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="RemuneracionesApi/RemuneracionesApi.csproj" />
+  <Project Path="EmpleadosApi/EmpleadosApi.csproj" />
+</Solution>
