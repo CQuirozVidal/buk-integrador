@@ -1,6 +1,18 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+app.Use(async (context, next) => 
+{
+    var auth = context.Request.Headers.Authorization.ToString();
+    if (auth != "Bearer token-demo") 
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await context.Response.WriteAsJsonAsync(new { error = "Token faltante o inválido" });
+        return;
+    }
+    await next();
+});
+
 var liquidaciones = new List<Liquidacion>();
 
 app.MapPost("/liquidaciones", (SolicitudLiquidacion s) => 
