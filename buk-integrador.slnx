@@ -1,4 +1,5 @@
 <Solution>
-  <Project Path="RemuneracionesApi/RemuneracionesApi.csproj" />
   <Project Path="EmpleadosApi/EmpleadosApi.csproj" />
+  <Project Path="Integrador/Integrador.csproj" Id="d3e3c048-0694-496a-83a1-20b4a508d9e7" />
+  <Project Path="RemuneracionesApi/RemuneracionesApi.csproj" />
 </Solution>
