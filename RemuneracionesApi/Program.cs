@@ -15,8 +15,17 @@ app.Use(async (context, next) =>
 
 var liquidaciones = new List<Liquidacion>();
 
-app.MapPost("/liquidaciones", (SolicitudLiquidacion s) => 
+var intentos = 0;
+
+app.MapPost("/liquidaciones", async (SolicitudLiquidacion s) => 
 {
+    //intentos++;
+    //if (intentos % 3 == 0)
+    //    return Results.StatusCode(500);
+
+    if (s.EmpleadoId == 2)
+        await Task.Delay(TimeSpan.FromSeconds(5));
+    
     if (s.EmpleadoId <= 0 || s.SueldoBase <= 0)
         return Results.BadRequest(new { error = "empleadoId y sueldoBase deben ser mayores que cero" });
 

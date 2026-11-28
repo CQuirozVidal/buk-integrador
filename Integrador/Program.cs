@@ -10,6 +10,7 @@ builder.Services.AddHttpClient("remuneraciones", c =>
 {
     c.BaseAddress = new Uri("http://localhost:5002");
     c.DefaultRequestHeaders.Add("Authorization", "Bearer token-demo");
+    c.Timeout = TimeSpan.FromSeconds(2); // Configura un timeout de 2 segundos  
 });
 
 var app = builder.Build();
@@ -25,9 +26,19 @@ app.MapPost("/sincronizar", async (IHttpClientFactory factory) =>
 
     foreach (var e in empleados!) 
     {
-        var respuesta = await clienteRemuneraciones.PostAsJsonAsync("/liquidaciones", new { empleadoId = e.Id, sueldoBase = e.SueldoBase });
-
-        resultados.Add(new ResultadoDto(e.Id, e.Nombre, (int)respuesta.StatusCode));
+        try 
+        { 
+            var respuesta = await clienteRemuneraciones.PostAsJsonAsync("/liquidaciones", new { EmpleadoId = e.Id, SueldoBase = e.SueldoBase });
+            resultados.Add(new ResultadoDto(e.Id, e.Nombre, (int)respuesta.StatusCode));
+        }
+        catch (TaskCanceledException)
+        {
+            resultados.Add(new ResultadoDto(e.Id, e.Nombre, 504)); // En caso de error, se registra un estado 504   
+        }
+        catch (HttpRequestException)
+        {
+            resultados.Add(new ResultadoDto(e.Id, e.Nombre, 503)); // En caso de error, se registra un estado 503
+        }
     }
 
     return Results.Ok(new {
