@@ -30,7 +30,13 @@ app.MapPost("/sincronizar", async (IHttpClientFactory factory) =>
         resultados.Add(new ResultadoDto(e.Id, e.Nombre, (int)respuesta.StatusCode));
     }
 
-    return Results.Ok(resultados);
+    return Results.Ok(new {
+        leidos = empleados.Count, 
+        creadas = resultados.Count(r => r.Estado == 201),
+        fallidas = resultados.Count(r => r.Estado != 201),
+        resultados
+    });
+
 });
 
 app.Run("http://localhost:5003");
